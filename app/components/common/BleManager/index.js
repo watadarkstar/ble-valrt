@@ -40,29 +40,24 @@ const bleManager = WrappedComponent =>
           this.setState({ devices: [...this.state.devices, item] });
         }
 
-        // // Check if it is a device you are looking for based on advertisement data
-        // // or other criteria.
-        // if (device.name === 'TI BLE Sensor Tag' ||
-        //   device.name === 'SensorTag') {
+        // Check if it is a device you are looking for based on advertisement data
+        // or other criteria.
+        if (
+          device.name === "TI BLE Sensor Tag" ||
+          device.name === "SensorTag"
+        ) {
+          // Stop scanning as it's not necessary if you are scanning for one device.
+          this.manager.stopDeviceScan();
 
-        //   // Stop scanning as it's not necessary if you are scanning for one device.
-        //   this.manager.stopDeviceScan();
-
-        //   // Proceed with connection.
-        // }
+          // Proceed with connection.
+        }
       });
     }
 
     async requestLocationPermission() {
       try {
         const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
-          {
-            title: "App Location Permission",
-            message:
-              "App needs access to your location " +
-              "so you can access bluetooth."
-          }
+          PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION
         );
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
           console.log("You can use bluetooth");

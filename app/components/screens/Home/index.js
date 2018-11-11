@@ -40,7 +40,12 @@ export class Home extends Component {
 
   renderList = () => {
     if (this.props.devices.length === 0)
-      return <ActivityIndicator size="large" color="#0000ff" />;
+      return (
+        <View>
+          <ActivityIndicator size="large" color="#337AB7" />
+          <Text>Scanning...</Text>
+        </View>
+      );
 
     return (
       <FlatList data={this.props.devices} renderItem={this.renderListItem} />
