@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
 import { Text, View } from 'react-native'
 
-export default class BluetoothList extends Component {
+import { bleManager } from "../../common";
+
+export class BluetoothList extends Component {
   render() {
+    console.log("this.props.manager", this.props.manager);
     return (
       <View>
         <Text> textInComponent </Text>
@@ -10,3 +13,5 @@ export default class BluetoothList extends Component {
     )
   }
 }
+
+export default bleManager(BluetoothList);

@@ -1,5 +1,5 @@
 import React from "react";
-import { StackNavigator } from "react-navigation";
+import { createStackNavigator } from "react-navigation";
 
 import {
   BluetoothList,
@@ -18,6 +18,6 @@ const appNavigatorConfig = {
     }
   },
 };
-const AppNavigator = StackNavigator(appNavigatorConfig);
+const AppNavigator = createStackNavigator(appNavigatorConfig);
 
 export default AppNavigator;
