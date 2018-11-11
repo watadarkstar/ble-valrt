@@ -1,7 +1,6 @@
 import { BleManager } from 'react-native-ble-plx';
 
 import React, { Component } from 'react'
-import { View } from 'react-native'
 
 const bleManager = (WrappedComponent) => class Ble extends Component {
   constructor() {
