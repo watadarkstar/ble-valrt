@@ -15,9 +15,21 @@ export default StyleSheet.create({
     height: 45,
     borderColor: "transparent",
     borderWidth: 0,
-    marginTop: 5
+    marginBottom: 20
   },
   buttonText: {
     color: "white"
+  },
+  listContainer: {
+    flex: 1,
+    marginTop: 20
+  },
+  listItem: {
+    flex: 1,
+    padding: 10,
+    height: 60,
+    width: 300,
+    borderBottomWidth: 1,
+    borderColor: "#D8D8D8",
   }
 });
