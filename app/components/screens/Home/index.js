@@ -1,12 +1,15 @@
 import React, { Component } from 'react'
 import { Text, View, TouchableOpacity } from 'react-native'
+import IntentLauncher, { IntentConstant } from 'react-native-intent-launcher'
 
 import { bleManager } from "../../common";
 import styles from "./styles";
 
 export class Home extends Component {
   openGoogleAssistant = () => {
-    console.log("TODO: get openGoogleAssistant working");
+    IntentLauncher.startActivity({
+      action: IntentConstant.ACTION_VOICE_ASSIST
+    });
   }
 
   connect = () => {
