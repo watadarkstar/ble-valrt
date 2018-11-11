@@ -2,7 +2,7 @@ import React from "react";
 import { createStackNavigator } from "react-navigation";
 
 import {
-  BluetoothList,
+  Home,
 } from "../screens/";
 
 const navigationOptions = {
@@ -10,8 +10,8 @@ const navigationOptions = {
 };
 
 const appNavigatorConfig = {
-  BluetoothList: {
-    screen: BluetoothList,
+  Home: {
+    screen: Home,
     navigationOptions: {
       ...navigationOptions,
       header: null

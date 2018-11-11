@@ -1,1 +1,1 @@
-export { default as BluetoothList } from "./BluetoothList";
+export { default as Home } from "./Home";
