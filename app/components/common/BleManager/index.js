@@ -34,6 +34,7 @@ const bleManager = WrappedComponent =>
           return;
         }
 
+        // ensure device is unique
         if (!this.devices[device.id]) {
           this.devices[device.id] = device.id;
           const item = { device, key: device.id };
