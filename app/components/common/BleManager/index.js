@@ -94,6 +94,11 @@ const bleManager = WrappedComponent =>
         return;
       }
 
+      if (this.state.connectedDevice.id === device.id) {
+        Alert.alert("Cannot Connect", "Device is already connected.");
+        return;
+      }
+
       if (!device.name) {
         Alert.alert(
           "Cannot Connect",
