@@ -64,7 +64,7 @@ export class Home extends Component {
           style={styles.listContainer}
         />
         {this.renderOnOffButton()}
-        {this.renderGoogleAssistantButton()}
+        {/* {this.renderGoogleAssistantButton()} */}
       </View>
     );
   };

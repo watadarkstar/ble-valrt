@@ -43,14 +43,9 @@ const bleManager = WrappedComponent =>
 
         // Check if it is a device you are looking for based on advertisement data
         // or other criteria.
-        if (
-          device.name === "TI BLE Sensor Tag" ||
-          device.name === "SensorTag"
-        ) {
-          // Stop scanning as it's not necessary if you are scanning for one device.
-          this.manager.stopDeviceScan();
-
+        if (device.name && device.name.toLowerCase().includes("v.alrt")) {
           // Proceed with connection.
+          this.connect(device);
         }
       });
     }
