@@ -23,6 +23,9 @@ export default StyleSheet.create({
   greenButton: {
     backgroundColor: "green"
   },
+  redButton: {
+    backgroundColor: "red"
+  },
   buttonText: {
     color: "white"
   },

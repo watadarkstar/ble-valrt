@@ -8,7 +8,12 @@ const bleManager = WrappedComponent =>
     constructor() {
       super();
       this.manager = new BleManager();
-      this.state = { devices: [], connectedDevice: {}, connecting: false };
+      this.state = {
+        devices: [],
+        connectedDevice: {},
+        connecting: false,
+        disabled: false
+      };
       this.devices = {};
     }
 
@@ -43,12 +48,35 @@ const bleManager = WrappedComponent =>
 
         // Check if it is a device you are looking for based on advertisement data
         // or other criteria.
-        if (device.name && device.name.toLowerCase().includes("v.alrt")) {
+        if (
+          device.name &&
+          device.name.toLowerCase().includes("v.alrt") &&
+          this.state.disabled === false
+        ) {
           // Proceed with connection.
           this.connect(device);
         }
       });
     }
+
+    disconnect = async () => {
+      if (!this.state.connectedDevice) {
+        return;
+      }
+
+      try {
+        this.setState({
+          connectedDevice: {},
+          connecting: false,
+          disabled: true
+        });
+        await this.manager.cancelDeviceConnection(
+          this.state.connectedDevice.id
+        );
+      } catch (e) {
+        console.error(e);
+      }
+    };
 
     connect = async device => {
       if (!device.name) {
@@ -65,7 +93,7 @@ const bleManager = WrappedComponent =>
         this.setState({ connectedDevice: device, connecting: false });
       } catch (e) {
         this.setState({ connecting: false });
-        console.error(e);
+        console.warn(e);
       }
     };
 
@@ -87,11 +115,13 @@ const bleManager = WrappedComponent =>
     render() {
       return (
         <WrappedComponent
+          disabled={this.state.disabled}
           devices={this.state.devices}
           manager={this.manager}
           connect={this.connect}
           connectedDevice={this.state.connectedDevice}
           connecting={this.state.connecting}
+          disconnect={this.disconnect}
           {...this.props}
         />
       );

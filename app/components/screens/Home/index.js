@@ -59,6 +59,7 @@ export class Home extends Component {
     return (
       <View style={{ flex: 1, alignSelf: "stretch" }}>
         <FlatList
+          extraData={this.props.connectedDevice}
           data={this.props.devices}
           renderItem={this.renderListItem}
           style={styles.listContainer}
@@ -69,11 +70,25 @@ export class Home extends Component {
     );
   };
 
-  renderOnOffButton = () => (
-    <TouchableOpacity style={[styles.button, styles.greenButton]}>
-      <Text style={styles.buttonText}>ON</Text>
-    </TouchableOpacity>
-  );
+  renderOnOffButton = () => {
+    const { connectedDevice } = this.props;
+
+    if (connectedDevice.id) {
+      return (
+        <TouchableOpacity
+          style={[styles.button, styles.greenButton]}
+          onPress={() => this.props.disconnect()}
+        >
+          <Text style={styles.buttonText}>ON</Text>
+        </TouchableOpacity>
+      );
+    }
+    return (
+      <TouchableOpacity style={[styles.button, styles.redButton]}>
+        <Text style={styles.buttonText}>OFF</Text>
+      </TouchableOpacity>
+    );
+  };
 
   renderGoogleAssistantButton = () => (
     <TouchableOpacity style={styles.button} onPress={this.openGoogleAssistant}>
