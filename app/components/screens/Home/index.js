@@ -37,13 +37,13 @@ export class Home extends Component {
   };
 
   renderList = () => {
-    const { devices, connecting } = this.props;
+    const { devices, loading } = this.props;
 
-    if (connecting) {
+    if (loading) {
       return (
         <Fragment>
           <ActivityIndicator size="large" color="#337AB7" />
-          <Text style={styles.text}>Connecting...</Text>
+          <Text style={styles.text}>Loading...</Text>
         </Fragment>
       );
     }

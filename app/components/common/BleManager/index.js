@@ -11,7 +11,7 @@ const bleManager = WrappedComponent =>
       this.state = {
         devices: [],
         connectedDevice: {},
-        connecting: false,
+        loading: false,
         disabled: false
       };
       this.devices = {};
@@ -54,7 +54,7 @@ const bleManager = WrappedComponent =>
           this.state.disabled === false
         ) {
           // Proceed with connection.
-          this.connect(device);
+          // this.connect(device);
         }
       });
     }
@@ -68,14 +68,15 @@ const bleManager = WrappedComponent =>
       }
 
       try {
-        this.setState({
-          connectedDevice: {},
-          connecting: false,
-          disabled: true
-        });
+        this.setState({ loading: true });
         await this.manager.cancelDeviceConnection(
           this.state.connectedDevice.id
         );
+        this.setState({
+          connectedDevice: {},
+          loading: false,
+          disabled: true
+        });
       } catch (e) {
         console.error(e);
       }
@@ -88,6 +89,11 @@ const bleManager = WrappedComponent =>
     };
 
     connect = async device => {
+      if (this.state.disabled) {
+        Alert.alert("Cannot Connect", "Service is disabled.");
+        return;
+      }
+
       if (!device.name) {
         Alert.alert(
           "Cannot Connect",
@@ -97,11 +103,11 @@ const bleManager = WrappedComponent =>
       }
 
       try {
-        this.setState({ connecting: true });
+        this.setState({ loading: true });
         await this.manager.connectToDevice(device.id);
-        this.setState({ connectedDevice: device, connecting: false });
+        this.setState({ connectedDevice: device, loading: false });
       } catch (e) {
-        this.setState({ connecting: false });
+        this.setState({ loading: false });
         console.warn(e);
       }
     };
@@ -129,7 +135,7 @@ const bleManager = WrappedComponent =>
           manager={this.manager}
           connect={this.connect}
           connectedDevice={this.state.connectedDevice}
-          connecting={this.state.connecting}
+          loading={this.state.loading}
           disconnect={this.disconnect}
           enable={this.enable}
           {...this.props}
