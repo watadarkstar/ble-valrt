@@ -1,5 +1,5 @@
 import { BleManager } from "react-native-ble-plx";
-import { PermissionsAndroid } from "react-native";
+import { PermissionsAndroid, Alert } from "react-native";
 
 import React, { Component } from "react";
 
@@ -8,7 +8,7 @@ const bleManager = WrappedComponent =>
     constructor() {
       super();
       this.manager = new BleManager();
-      this.state = { devices: [] };
+      this.state = { devices: [], connectedDevice: {}, connecting: false };
       this.devices = {};
     }
 
@@ -55,6 +55,25 @@ const bleManager = WrappedComponent =>
       });
     }
 
+    connect = async device => {
+      if (!device.name) {
+        Alert.alert(
+          "Cannot Connect",
+          "It is not possible to connect to this device. Try another device with a device name."
+        );
+        return;
+      }
+
+      try {
+        this.setState({ connecting: true });
+        await this.manager.connectToDevice(device.id);
+        this.setState({ connectedDevice: device, connecting: false });
+      } catch (e) {
+        this.setState({ connecting: false });
+        console.error(e);
+      }
+    };
+
     async requestLocationPermission() {
       try {
         const granted = await PermissionsAndroid.request(
@@ -75,6 +94,9 @@ const bleManager = WrappedComponent =>
         <WrappedComponent
           devices={this.state.devices}
           manager={this.manager}
+          connect={this.connect}
+          connectedDevice={this.state.connectedDevice}
+          connecting={this.state.connecting}
           {...this.props}
         />
       );

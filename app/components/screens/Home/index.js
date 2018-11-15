@@ -4,8 +4,7 @@ import {
   View,
   FlatList,
   TouchableOpacity,
-  ActivityIndicator,
-  Alert
+  ActivityIndicator
 } from "react-native";
 import IntentLauncher, { IntentConstant } from "react-native-intent-launcher";
 
@@ -13,43 +12,19 @@ import { bleManager } from "../../common";
 import styles from "./styles";
 
 export class Home extends Component {
-  state = {
-    connectedDevice: {},
-    connecting: false
-  };
-
   openGoogleAssistant = () => {
     IntentLauncher.startActivity({
       action: IntentConstant.ACTION_VOICE_ASSIST
     });
   };
 
-  onDevicePress = async device => {
-    if (!device.name) {
-      Alert.alert(
-        "Cannot Connect",
-        "It is not possible to connect to this device. Try another device with a device name."
-      );
-      return;
-    }
-
-    try {
-      this.setState({ connecting: true });
-      await this.props.manager.connectToDevice(device.id);
-      this.setState({ connectedDevice: device, connecting: false });
-    } catch (e) {
-      this.setState({ connecting: false });
-      console.error(e);
-    }
-  };
-
   renderListItem = ({ item }) => {
-    const { connectedDevice } = this.state;
+    const { connectedDevice } = this.props;
     const isConnectedDevice = connectedDevice.id === item.device.id;
 
     return (
       <TouchableOpacity
-        onPress={() => this.onDevicePress(item.device)}
+        onPress={() => this.props.connect(item.device)}
         style={styles.listItem}
       >
         <Text style={styles.deviceName}>
@@ -62,8 +37,7 @@ export class Home extends Component {
   };
 
   renderList = () => {
-    const { connecting } = this.state;
-    const { devices } = this.props;
+    const { devices, connecting } = this.props;
 
     if (connecting) {
       return (

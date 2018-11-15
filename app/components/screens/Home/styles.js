@@ -32,7 +32,8 @@ export default StyleSheet.create({
   },
   listContainer: {
     flex: 1,
-    alignSelf: "stretch"
+    alignSelf: "stretch",
+    marginBottom: 20
   },
   listItem: {
     flex: 1,
