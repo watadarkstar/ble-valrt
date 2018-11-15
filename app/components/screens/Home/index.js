@@ -6,18 +6,11 @@ import {
   TouchableOpacity,
   ActivityIndicator
 } from "react-native";
-import IntentLauncher, { IntentConstant } from "react-native-intent-launcher";
 
 import { bleManager } from "../../common";
 import styles from "./styles";
 
 export class Home extends Component {
-  openGoogleAssistant = () => {
-    IntentLauncher.startActivity({
-      action: IntentConstant.ACTION_VOICE_ASSIST
-    });
-  };
-
   renderListItem = ({ item }) => {
     const { connectedDevice } = this.props;
     const isConnectedDevice = connectedDevice.id === item.device.id;

@@ -1,7 +1,11 @@
 import { BleManager } from "react-native-ble-plx";
 import { PermissionsAndroid, Alert } from "react-native";
+import IntentLauncher, { IntentConstant } from "react-native-intent-launcher";
 
 import React, { Component } from "react";
+
+const SERVICE = "ffffffe0-00f7-4000-b000-000000000000";
+const CHARACTERISTIC = "ffffffe1-00f7-4000-b000-000000000000";
 
 const bleManager = WrappedComponent =>
   class Ble extends Component {
@@ -59,6 +63,30 @@ const bleManager = WrappedComponent =>
       });
     }
 
+    openGoogleAssistant = () => {
+      IntentLauncher.startActivity({
+        action: IntentConstant.ACTION_VOICE_ASSIST
+      });
+    };
+
+    monitor = async device => {
+      await device.discoverAllServicesAndCharacteristics();
+      device.monitorCharacteristicForService(
+        SERVICE,
+        CHARACTERISTIC,
+        (e, data) => {
+          if (e) {
+            console.error(e);
+            return;
+          }
+          console.log("test", e, data);
+          if (data.value === "AA==") {
+            this.openGoogleAssistant();
+          }
+        }
+      );
+    };
+
     disconnect = async () => {
       if (!this.state.connectedDevice.id) {
         this.setState({
@@ -111,6 +139,7 @@ const bleManager = WrappedComponent =>
         this.setState({ loading: true });
         await this.manager.connectToDevice(device.id);
         this.setState({ connectedDevice: device, loading: false });
+        this.monitor(device);
       } catch (e) {
         this.setState({ loading: false });
         console.warn(e);
