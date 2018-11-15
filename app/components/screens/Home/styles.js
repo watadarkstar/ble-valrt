@@ -22,6 +22,8 @@ export default StyleSheet.create({
     color: "white"
   },
   greenText: {
+    fontWeight: "bold",
+    fontSize: 12,
     color: "green"
   },
   listContainer: {
@@ -35,5 +37,13 @@ export default StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: "#D8D8D8",
     backgroundColor: "white"
+  },
+  deviceName: {
+    fontSize: 18,
+    color: "#4A90E2"
+  },
+  text: {
+    fontSize: 12,
+    color: "#BBBBBB"
   }
 });

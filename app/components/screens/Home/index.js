@@ -43,8 +43,8 @@ export class Home extends Component {
         onPress={() => this.onDevicePress(item.device)}
         style={styles.listItem}
       >
-        <Text>Device Name: {item.device.name || "Unknown"}</Text>
-        <Text>Device ID: {item.key}</Text>
+        <Text style={styles.deviceName}>{item.device.name || "Unknown"}</Text>
+        <Text style={styles.text}>{item.key}</Text>
         {isConnectedDevice && <Text style={styles.greenText}>Connected</Text>}
       </TouchableOpacity>
     );
