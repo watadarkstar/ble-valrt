@@ -60,7 +60,10 @@ const bleManager = WrappedComponent =>
     }
 
     disconnect = async () => {
-      if (!this.state.connectedDevice) {
+      if (!this.state.connectedDevice.id) {
+        this.setState({
+          disabled: true
+        });
         return;
       }
 
@@ -76,6 +79,12 @@ const bleManager = WrappedComponent =>
       } catch (e) {
         console.error(e);
       }
+    };
+
+    enable = () => {
+      this.setState({
+        disabled: false
+      });
     };
 
     connect = async device => {
@@ -122,6 +131,7 @@ const bleManager = WrappedComponent =>
           connectedDevice={this.state.connectedDevice}
           connecting={this.state.connecting}
           disconnect={this.disconnect}
+          enable={this.enable}
           {...this.props}
         />
       );

@@ -71,9 +71,9 @@ export class Home extends Component {
   };
 
   renderOnOffButton = () => {
-    const { connectedDevice } = this.props;
+    const { disabled } = this.props;
 
-    if (connectedDevice.id) {
+    if (!disabled) {
       return (
         <TouchableOpacity
           style={[styles.button, styles.greenButton]}
@@ -84,7 +84,10 @@ export class Home extends Component {
       );
     }
     return (
-      <TouchableOpacity style={[styles.button, styles.redButton]}>
+      <TouchableOpacity
+        style={[styles.button, styles.redButton]}
+        onPress={this.props.enable}
+      >
         <Text style={styles.buttonText}>OFF</Text>
       </TouchableOpacity>
     );
