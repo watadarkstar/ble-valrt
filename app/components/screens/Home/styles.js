@@ -5,6 +5,7 @@ export default StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "white"
   },
   button: {
     padding: 5,
@@ -20,16 +21,19 @@ export default StyleSheet.create({
   buttonText: {
     color: "white"
   },
+  greenText: {
+    color: "green"
+  },
   listContainer: {
     flex: 1,
-    marginTop: 20
+    alignSelf: "stretch"
   },
   listItem: {
     flex: 1,
-    padding: 10,
-    height: 60,
-    width: 300,
+    padding: 20,
+    alignSelf: "stretch",
     borderBottomWidth: 1,
     borderColor: "#D8D8D8",
+    backgroundColor: "white"
   }
 });
