@@ -8,21 +8,25 @@ export default StyleSheet.create({
     backgroundColor: "white"
   },
   button: {
+    alignSelf: "stretch",
     padding: 5,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#337AB7",
-    width: 300,
     height: 45,
     borderColor: "transparent",
     borderWidth: 0,
+    marginLeft: 20,
+    marginRight: 20,
     marginBottom: 20
+  },
+  greenButton: {
+    backgroundColor: "green"
   },
   buttonText: {
     color: "white"
   },
   greenText: {
-    fontWeight: "bold",
     fontSize: 12,
     color: "green"
   },

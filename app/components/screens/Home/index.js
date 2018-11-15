@@ -4,7 +4,8 @@ import {
   View,
   FlatList,
   TouchableOpacity,
-  ActivityIndicator
+  ActivityIndicator,
+  Alert
 } from "react-native";
 import IntentLauncher, { IntentConstant } from "react-native-intent-launcher";
 
@@ -24,6 +25,14 @@ export class Home extends Component {
   };
 
   onDevicePress = async device => {
+    if (!device.name) {
+      Alert.alert(
+        "Cannot Connect",
+        "It is not possible to connect to this device. Try another device with a device name."
+      );
+      return;
+    }
+
     try {
       this.setState({ connecting: true });
       await this.props.manager.connectToDevice(device.id);
@@ -43,7 +52,9 @@ export class Home extends Component {
         onPress={() => this.onDevicePress(item.device)}
         style={styles.listItem}
       >
-        <Text style={styles.deviceName}>{item.device.name || "Unknown"}</Text>
+        <Text style={styles.deviceName}>
+          {item.device.name || "Unknown Device Name"}
+        </Text>
         <Text style={styles.text}>{item.key}</Text>
         {isConnectedDevice && <Text style={styles.greenText}>Connected</Text>}
       </TouchableOpacity>
@@ -58,7 +69,7 @@ export class Home extends Component {
       return (
         <Fragment>
           <ActivityIndicator size="large" color="#337AB7" />
-          <Text>Connecting...</Text>
+          <Text style={styles.text}>Connecting...</Text>
         </Fragment>
       );
     }
@@ -67,24 +78,32 @@ export class Home extends Component {
       return (
         <Fragment>
           <ActivityIndicator size="large" color="#337AB7" />
-          <Text>Scanning...</Text>
+          <Text style={styles.text}>Scanning...</Text>
         </Fragment>
       );
 
     return (
-      <FlatList
-        data={this.props.devices}
-        renderItem={this.renderListItem}
-        style={styles.listContainer}
-      />
+      <View style={{ flex: 1, alignSelf: "stretch" }}>
+        <FlatList
+          data={this.props.devices}
+          renderItem={this.renderListItem}
+          style={styles.listContainer}
+        />
+        {this.renderOnOffButton()}
+        {this.renderGoogleAssistantButton()}
+      </View>
     );
   };
 
+  renderOnOffButton = () => (
+    <TouchableOpacity style={[styles.button, styles.greenButton]}>
+      <Text style={styles.buttonText}>ON</Text>
+    </TouchableOpacity>
+  );
+
   renderGoogleAssistantButton = () => (
     <TouchableOpacity style={styles.button} onPress={this.openGoogleAssistant}>
-      <Text style={styles.buttonText}>
-        Press me to activate Google Assistant
-      </Text>
+      <Text style={styles.buttonText}>Activate Google Assistant</Text>
     </TouchableOpacity>
   );
 
