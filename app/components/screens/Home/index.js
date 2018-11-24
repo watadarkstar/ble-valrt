@@ -13,7 +13,8 @@ import styles from "./styles";
 export class Home extends Component {
   renderListItem = ({ item }) => {
     const { connectedDevice } = this.props;
-    const isConnectedDevice = connectedDevice.id === item.device.id;
+    const isConnectedDevice =
+      connectedDevice && connectedDevice.id === item.device.id;
 
     return (
       <TouchableOpacity

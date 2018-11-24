@@ -1,20 +1,26 @@
 import { BleManager } from "react-native-ble-plx";
 import { PermissionsAndroid, Alert } from "react-native";
-import IntentLauncher, { IntentConstant } from "react-native-intent-launcher";
-
+import { Open } from "../../../utils/";
 import React, { Component } from "react";
 
 const SERVICE = "ffffffe0-00f7-4000-b000-000000000000";
 const CHARACTERISTIC = "ffffffe1-00f7-4000-b000-000000000000";
 
+/* 
+Main Functionality:
+1. scan()
+2. connect(device)
+3. monitor(device)
+*/
+
 const bleManager = WrappedComponent =>
   class Ble extends Component {
-    constructor() {
-      super();
+    constructor(props) {
+      super(props);
       this.manager = new BleManager();
       this.state = {
         devices: [],
-        connectedDevice: {},
+        connectedDevice: null,
         loading: false,
         disabled: false
       };
@@ -31,11 +37,12 @@ const bleManager = WrappedComponent =>
       }, true);
     }
 
+    /* Scan for devices and connect to valrt devices automatically */
     scan() {
       this.manager.startDeviceScan(null, null, (e, device) => {
         if (e) {
           // Handle error (scanning will be stopped automatically)
-          console.error(e);
+          console.error("scan failed", e);
           return;
         }
 
@@ -55,74 +62,27 @@ const bleManager = WrappedComponent =>
         if (
           device.name &&
           device.name.toLowerCase().includes("v.alrt") &&
-          this.state.disabled === false
+          this.state.disabled === false &&
+          this.state.loading === false &&
+          this.state.connectedDevice === null
         ) {
           // Proceed with connection.
-          // this.connect(device);
+          this.connect(device);
         }
       });
     }
 
-    openGoogleAssistant = () => {
-      IntentLauncher.startActivity({
-        action: IntentConstant.ACTION_VOICE_ASSIST
-      });
-    };
-
-    monitor = async device => {
-      await device.discoverAllServicesAndCharacteristics();
-      device.monitorCharacteristicForService(
-        SERVICE,
-        CHARACTERISTIC,
-        (e, data) => {
-          if (e) {
-            console.error(e);
-            return;
-          }
-          console.log("test", e, data);
-          if (data.value === "AA==") {
-            this.openGoogleAssistant();
-          }
-        }
-      );
-    };
-
-    disconnect = async () => {
-      if (!this.state.connectedDevice.id) {
-        this.setState({
-          disabled: true
-        });
-        return;
-      }
-
-      try {
-        this.setState({ loading: true });
-        await this.manager.cancelDeviceConnection(
-          this.state.connectedDevice.id
-        );
-        this.setState({
-          connectedDevice: {},
-          loading: false,
-          disabled: true
-        });
-      } catch (e) {
-        console.error(e);
-      }
-    };
-
-    enable = () => {
-      this.setState({
-        disabled: false
-      });
-    };
-
+    /* Connect to device */
     connect = async device => {
       if (this.state.disabled) {
         Alert.alert("Cannot Connect", "Service is disabled.");
         return;
       }
 
-      if (this.state.connectedDevice.id === device.id) {
+      if (
+        this.state.connectedDevice &&
+        this.state.connectedDevice.id === device.id
+      ) {
         Alert.alert("Cannot Connect", "Device is already connected.");
         return;
       }
@@ -135,15 +95,73 @@ const bleManager = WrappedComponent =>
         return;
       }
 
+      this.setState({ loading: true });
       try {
-        this.setState({ loading: true });
         await this.manager.connectToDevice(device.id);
-        this.setState({ connectedDevice: device, loading: false });
-        this.monitor(device);
       } catch (e) {
         this.setState({ loading: false });
-        console.warn(e);
+        console.error("connect failed", e);
+        return;
       }
+
+      this.setState({ connectedDevice: device, loading: false });
+      this.monitorDisconnect(device);
+      this.monitor(device);
+    };
+
+    /* Monitor services and characteristics */
+    monitor = async device => {
+      try {
+        await device.discoverAllServicesAndCharacteristics();
+      } catch (e) {
+        console.error("discoverAllServicesAndCharacteristics failed", e);
+        return;
+      }
+      device.monitorCharacteristicForService(
+        SERVICE,
+        CHARACTERISTIC,
+        (e, data) => {
+          if (e) {
+            console.error("monitorCharacteristicForService failed", e);
+            return;
+          }
+          console.log("test", e, data);
+          if (data.value === "AA==") {
+            Open.googleAssistant();
+          }
+        }
+      );
+    };
+
+    monitorDisconnect = device => {
+      device.onDisconnected(() => {
+        console.warn("onDeviceDisconnected called");
+        this.setState({ connectedDevice: null });
+      });
+    };
+
+    disconnect = async () => {
+      if (!this.state.connectedDevice) {
+        this.setState({ disabled: true });
+        return;
+      }
+      this.setState({ loading: true });
+      try {
+        await this.manager.cancelDeviceConnection(
+          this.state.connectedDevice.id
+        );
+      } catch (e) {
+        console.error("cancelDeviceConnection failed", e);
+      }
+      this.setState({
+        connectedDevice: null,
+        loading: false,
+        disabled: true
+      });
+    };
+
+    enable = () => {
+      this.setState({ disabled: false });
     };
 
     async requestLocationPermission() {
